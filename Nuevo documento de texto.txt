@@ -1,0 +1,26 @@
+$('#ficha').on('click','.guardar',function(){
+    console.log('Guardando como favorito');
+}
+
+function writeFile(fileEntry, dataObj) {
+        // Create a FileWriter object for our FileEntry (log.txt).
+        fileEntry.createWriter(function (fileWriter) {
+
+            fileWriter.onwriteend = function() {
+                console.log("Guardado...");
+                readFile(fileEntry);
+            };
+
+            fileWriter.onerror = function (e) {
+                console.log("No se pudo guardar " + e.toString());
+            };
+
+            // If data object is not passed in,
+            // create a new Blob instead.
+            if (!dataObj) {
+                dataObj = new Blob(['some file data'], { type: 'text/plain' });
+            }
+
+            fileWriter.write(dataObj);
+        });
+    }
