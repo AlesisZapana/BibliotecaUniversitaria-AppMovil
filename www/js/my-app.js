@@ -3,8 +3,8 @@
 //   console.log(data);
 // });
 
-// Initialize app
-var API_URL = 'http://192.168.2.111:8000/api';
+// cambiar esta variable segun corresponda
+var API_URL = 'http://10.7.230.89:8000/api';
 var tBoton='hola';
 var myApp = new Framework7();
 var busquedaInicial='';
@@ -475,7 +475,11 @@ myApp.onPageInit('historial', function (page) {
 $$('.pages').on('click','.buscar', function(e){
     console.log('rebuscar');
     console.log(this.id);
-    document.getElementById("busqueda").value()='ojala';
+    var rebuscar=this.id;
+    setTimeout(function(){
+        $('#busqueda').val(rebuscar);
+    },500);
+    
     console.log('listo');
 });
 
