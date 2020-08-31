@@ -4,7 +4,7 @@
 // });
 
 // cambiar esta variable segun corresponda
-var API_URL = 'http://10.7.230.89:8000/api';
+var API_URL = 'http://192.168.2.111:8000/api';
 var tBoton='hola';
 var myApp = new Framework7();
 var busquedaInicial='';
@@ -57,7 +57,6 @@ $$('.pages').on('submit','#form-busqueda', function(e){
     console.log(param);
     var direccion=API_URL+'/search?busqueda='+param;
     historial.setItem(param, direccion).then(function (value) {
-                console.log('prueba');
                 console.log(value);
             }).catch(function(err) {
                 // This code runs if there were any errors
@@ -71,7 +70,7 @@ $$('.pages').on('submit','#form-busqueda', function(e){
         success: function(data) {
             console.log('exito');
             $('#resultados').html('Resultados:');
-            $('#libros').html('<div class="preloader"></div>');
+            //$('#libros').html('<div class="preloader"></div>');
             insertarLibros(data);
         },
         error: function(xhr, status) {
@@ -82,54 +81,40 @@ $$('.pages').on('submit','#form-busqueda', function(e){
     });
 });
 
-//clic en buscar
-// $('#buscar').on('click',function(){
-//             buscar=document.getElementById("busqueda").value;
-//             url=API_URL+'/search/'.concat(buscar);
-//             console.log(url); 
-//             //acá tendría que recibir lo del json con la url 
-//             $$.getJSON(url, function (data) { 
-//                 console.log('Carga realizada');
-//                 //linea muy importante
-//                 insertarLibros(data);
-//             });
-//             console.log('listo');            
-            
-//             historial.setItem(buscar, url).then(function (value) {
-//                 console.log('prueba');
-//                 console.log(value);
-//             }).catch(function(err) {
-//                 // This code runs if there were any errors
-//                 console.log(err);
-//             });
-            
-//             $('#resultados').html('Resultados:');
-//             $('#libros').html('<div class="preloader"></div>')
-//         });
-
 function insertarLibros(data) {
     let templateLibros='';
-    num=1;
     data.forEach(function (item) {
-        templateLibros+=`
+        /*templateLibros+=`
             <div class="card">
                 <div class="card-header">${item.titulo}</div> 
                     <div class="card-content card-content-padding">${item.resumen}</div>
                 <div class="card-footer">
-                    <a id="${item.id}" class="ficha button" href="ficha.html" onclick="insertarFicha(${item});">Ver</a>
+                    <a id="${item.id}" class="ficha button" href="ficha.html">Ver</a>
                 </div>
             </div>
+        `;*/
+        templateLibros+=`
+        <a id="${item.id}" class="ficha" href="ficha.html">
+            <div class="card">
+                <div class="card-header">${item.titulo}</div> 
+                <div class="card-content card-content-padding">${item.resumen}</div>
+                <div class="card-footer">
+                    
+                </div>
+            </div>
+            </a>
         `;
-        num++;
+        // onclick="insertarFicha(${item});" 
     }); 
+    console.log(this);
     $$('#libros').html(templateLibros); 
 }
 
 
 //boton para una ficha
-$('#libros').on('click','.ficha',function(){
-
-            console.log(this.id);
+$('#libros').on('click','.ficha',function(id){
+            console.log('entranding '+id);
+            console.log('entrando a ficha '+this.id);
             urlFicha=API_URL+'/ficha/'.concat(this.id);
             console.log(urlFicha);
             $$.getJSON(urlFicha, function (data) { 
@@ -146,21 +131,7 @@ function insertarFicha(item) {
     let templateLibro='';
     console.log(item.titulo);
     
-    
-
         libroActual=item;
-        
-        // var favorito=true;
-        // libros_favoritos.getItem(item.id, function(err, value) {
-        //     if (value==null) {
-        //         favorito=false;
-        //         console.log('No está en favoritos');
-        //     } else {
-        //         favorito=true;
-        //         console.log('Está en favoritos');
-        //     }
-        //     console.log(value);
-        // });        
         
         //para las categorias
         categorias=item.categoria;
@@ -196,47 +167,7 @@ function insertarFicha(item) {
             `;
         });
 
-        //no anduvo (cambia si es favorito o no)
-        // botonFavorito = new Promise(function(resolve,reject) {
-        //     libros_favoritos.getItem(item.id, function(err, value) {
-        //         if (value==null) {
-        //             templateBoton= '<a href="#" class="guardar button notification-custom">Guardar en favoritos</a>';
-        //             // favorito=false;
-        //             console.log('No está en favoritos');
-        //         } else {
-        //             templateBoton='<a href="#" class="eliminar button notification-custom">Eliminar de favoritos</a>';
-        //             // favorito=true;
-        //             console.log('Está en favoritos');
-        //         }
-        //         resolve(templateBoton);
-        //         reject('Anda mal');
-        //     });        
-        // });
-
-        // var capsBotonFavorito=function() {
-        //     botonFavorito
-        //         .then(function(fulfilled) {
-        //             console.log(fulfilled);
-        //             tBoton=fulfilled;
-        //             // insertarBoton(fulfilled);
-        //         })
-        //         .catch(function(error) {
-        //             console.log(error.message);
-        //         });
-        // };
-        // libros_favoritos.getItem(item.id, function(err, value) {
-        //                         if (value==null) {
-        //                             templateBoton= '<a href="#" class="guardar button notification-custom">Guardar en favoritos</a>';
-        //                             console.log('No está en favoritos');
-        //                         } else {
-        //                             templateBoton='<a href="#" class="eliminar button notification-custom">Eliminar de favoritos</a>';
-        //                             console.log('Está en favoritos');
-        //                         }
-        //                         return templateBoton;
-
-        //                     });        
-
-        //capsBotonFavorito(); 
+        
         templateLibro+=`
             <div class="block-title"><h1>${item.titulo}</h1></div>
             <img src="${item.portada}">
@@ -314,19 +245,6 @@ $$(document).on('click','#ficha', function (e) {
     $$('#ficha').html(templateLibro);
 });
 
-// $$(document).on('click','.guardar',function(){
-//     console.log('Guardando como favorito');
-//     // guardar como favorito
-//     console.log(libroActual.id);
-//     libros_favoritos.setItem(libroActual.id, libroActual).then(function (value) {
-//         // Do other things once the value has been saved.
-//         console.log('Guardado');
-//         console.log(value);
-//     }).catch(function(err) {
-//         // This code runs if there were any errors
-//         console.log(err);
-//     });
-// });
 
 // Option 1. Using page callback for page (for "about" page in this case) (recommended way):
 myApp.onPageInit('about', function (page) {
@@ -384,94 +302,61 @@ myApp.onPageInit('favoritos', function (page) {
 })
 
 $$(document).on('click','.ficha-favorita',function(){
-            // console.log(this.id);
-            // urlFicha=API_URL+'/ficha/'.concat(this.id);
-            // console.log(urlFicha);
             libros_favoritos.getItem(this.id, function(err, value) {
                 insertarFicha(value);
                 console.log(value);
             });            
-            // $$.getJSON(urlFicha, function (data) { 
-            //     insertarFicha(data);
-            // });
            
         })
 
 myApp.onPageInit('historial', function (page) {
     // Do something here for "about" page
+        num_claves=0;
         let templateHistorial=`
             <div class="card">
             <div class="card-content">
             <div class="list-block">
             <ul>
         `;
-        // podría redirigir a la busqueda de vuelta
-        // historial.iterate(function(value, key, iterationNumber) {
-        //     templateHistorial+=`
-        //             <li>
-        //               <a href="#" class="item-link item-content">
-        //                 <div class="item-inner">
-        //                   <div class="item-title">${key}</div>
-        //                 </div>
-        //               </a>
-        //             </li>
-        //         `;
-        //     console.log([key, value]);
-        // }).then(function() {
-        //     templateHistorial+=`
-        //         </ul>
-        //         </div>
-        //         </div>
-        //         </div>
-        //     `;
-        //     console.log('Iteration has completed');
-        //     $$('#historial').html(templateHistorial);
-        // }).catch(function(err) {
-        //     // This code runs if there were any errors
-        //     console.log(err);
-        // });
         
-        //probando
-        historial.iterate(function(value, key, iterationNumber) {
-            if (iterationNumber < 6) {
+        historial.keys().then(function (keys) {
+            num_claves=keys.length;
+            console.log(keys);
+            historial.iterate(function(value, key, iterationNumber) {
+                //iterationNumber=num_claves-3;
+                //console.log(iterationNumber);
+                if (iterationNumber > num_claves-5) {
+                    templateHistorial+=`
+                        <li>
+                          <a id="${key}" class="item-link item-content buscar back link" href="#">
+                            <div class="item-inner">
+                              <div class="item-title">${key}</div>
+                            </div>
+                          </a>
+                        </li>
+                    `;
+                    //console.log([key, value]);
+                }
+            }).then(function(result) {
                 templateHistorial+=`
-                    <li>
-                      <a href="index.html" id="${key}" class="item-link item-content buscar">
-                        <div class="item-inner">
-                          <div class="item-title">${key}</div>
-                        </div>
-                      </a>
-                    </li>
+                    </ul>
+                    </div>
+                    </div>
+                    </div>
                 `;
-                console.log([key, value]);
-            } else {
-                return [key, value];
-            }
-        }).then(function(result) {
-            templateHistorial+=`
-                </ul>
-                </div>
-                </div>
-                </div>
-            `;
-            $$('#historial').html(templateHistorial);
-        }).catch(function(err) {
-            // This code runs if there were any errors
-            console.log(err);
-        });        
+                $$('#historial').html(templateHistorial);
+            }).catch(function(err) {
+                // This code runs if there were any errors
+                console.log(err);
+            });
+        });
+
+
+                
         //insertarHistorial(templateHistorial);
 })
 
-// $$(document).on('click','.buscar',function(){
-//             console.log(this.id);
-//             urlFicha=API_URL+'/ficha/'.concat(this.id);
-//             console.log(urlFicha);
-//             $$.getJSON(urlFicha, function (data) { 
-//                 insertarFicha(data);
-//             });
-           
-//         })
-
+//la clase buscar
 $$('.pages').on('click','.buscar', function(e){
     console.log('rebuscar');
     console.log(this.id);
@@ -479,7 +364,6 @@ $$('.pages').on('click','.buscar', function(e){
     setTimeout(function(){
         $('#busqueda').val(rebuscar);
     },500);
-    
     console.log('listo');
 });
 
